@@ -20,7 +20,7 @@ Resources:
           Type: Api
           Properties:
             Path: /{fileName}
-            Method: post
+            Method: put
   uploadPhotoRole:
     Type: AWS::IAM::Role
     Properties:
