@@ -24,28 +24,35 @@ exports.handler = (event, context, callback) => {
 
   console.log("uploading with params: "+JSON.stringify(s3Params, null, 2));
 
+  var responseBody = {};  
+	var responseStatus = 200;
+	var responseContentType = "application/json";
+
   s3.getSignedUrl('putObject', s3Params, (err, data) => {
     if(err){
       console.log(err);
-      callback(null, JSON.parse(JSON.stringify(err,null,2)));
+      responseBody = err;
+			responseStatus = 417;
     }
     else {
     	console.log(data);
-    	const returnData = {
-			signedRequest: data,
-			url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
-		};
-		
-		var response = {
-			"statusCode": 200,
+    	responseBody = {
+        signedRequest: data,
+        url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
+      };
+    }
+    
+    var response = {
+			"statusCode": responseStatus,
 			"headers": {
-				"Content-Type": "application/json"
+				"Content-Type": responseContentType
 			},
-			"body": JSON.stringify(returnData),
+			"body": JSON.stringify(responseBody),
 			"isBase64Encoded": false
 		}
-		
+
+		console.log(response);
 		callback(null, response);
-    } 
+    
   });
 };
