@@ -4,6 +4,8 @@ Resources:
   uploadPhoto:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: uploadPhotoV2
+      Description: API to delete a file from S3 Bucket for a given file index
       Handler: index.handler
       Runtime: nodejs8.10
       Timeout: 60
@@ -19,8 +21,16 @@ Resources:
         photos:
           Type: Api
           Properties:
-            Path: /{fileName}
+            Path: /photos
             Method: put
+            RestApiId: !Ref galleryApi
+  galleryApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: galleryV2
+      StageName: prod
+      Cors:
+        AllowOrigin: "'*'"
   uploadPhotoRole:
     Type: AWS::IAM::Role
     Properties:
